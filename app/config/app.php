@@ -2,6 +2,8 @@
 
 return array(
 
+    'userAgent' => 'User Agent',
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -107,6 +109,9 @@ return array(
         'Illuminate\View\ViewServiceProvider',
         'Illuminate\Workbench\WorkbenchServiceProvider',
 
+        'anlutro\cURL\Laravel\cURLServiceProvider',
+
+        'Services\Http\HttpServiceProvider',
     ),
 
     /*
@@ -173,6 +178,7 @@ return array(
         'Validator'       => 'Illuminate\Support\Facades\Validator',
         'View'            => 'Illuminate\Support\Facades\View',
 
+        'cURL'            => 'anlutro\cURL\Laravel\cURL',
     ),
 
 );
