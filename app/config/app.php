@@ -112,6 +112,7 @@ return array(
         'anlutro\cURL\Laravel\cURLServiceProvider',
 
         'Services\Http\HttpServiceProvider',
+        'Services\Basic\BasicServiceProvider',
     ),
 
     /*
