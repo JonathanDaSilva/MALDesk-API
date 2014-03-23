@@ -20,8 +20,8 @@ class BasicTest extends TestCase {
 
         $this->assertTrue(Basic::isConnected());
         $this->assertFalse(Basic::isNotConnected());
-        $this->assertEquals(Basic::getUsername(), 'foo');
-        $this->assertEquals(Basic::getPassword(), 'bar');
+        $this->assertEquals('foo', Basic::getUsername());
+        $this->assertEquals('bar', Basic::getPassword());
     }
 
     public function testNoWithCredentials()

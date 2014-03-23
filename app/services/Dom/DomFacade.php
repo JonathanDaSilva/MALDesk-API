@@ -1,15 +1,15 @@
 <?php
-namespace Services\Basic;
+namespace Services\Dom;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Service\Basic\Basic
+ * @see \Service\Dom\Dom
  */
-class BasicFacade extends Facade
+class DomFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'basic';
+        return 'dom';
     }
 }

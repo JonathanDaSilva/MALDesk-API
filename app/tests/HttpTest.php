@@ -10,7 +10,7 @@ class HttpTest extends TestCase {
 
         $http = new \Services\Http\Http;
 
-        $this->assertEquals($http->userAgent, 'foo');
+        $this->assertEquals('foo', $http->userAgent);
     }
 
     public function testIfReturnContent()
@@ -22,7 +22,7 @@ class HttpTest extends TestCase {
         cURL::shouldReceive('newRequest->setHeaders->send')
             ->andReturn($response);
 
-        $this->assertEquals(Http::get('foo'),  'bar');
+        $this->assertEquals('bar', Http::get('foo'));
     }
 
     public function testEncodingContent()
@@ -36,6 +36,6 @@ class HttpTest extends TestCase {
         cURL::shouldReceive('newRequest->setHeaders->send')
             ->andReturn($response);
 
-        $this->assertEquals(Http::get('foo'),  'bar');
+        $this->assertEquals('bar', Http::get('foo'));
     }
 }

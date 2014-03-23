@@ -113,6 +113,7 @@ return array(
 
         'Services\Http\HttpServiceProvider',
         'Services\Basic\BasicServiceProvider',
+        'Services\Dom\DomServiceProvider',
     ),
 
     /*
