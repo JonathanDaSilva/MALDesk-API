@@ -8,8 +8,9 @@ class DomTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->xml  = Http::get('http://myanimelist.net/malappinfo.php?u=xinil');
-        $this->html = Http::get('http://myanimelist.net/anime/6213');
+        $dir = dirname(__FILE__);
+        $this->xml  = file_get_contents($dir.'/example/xinillist.xml');
+        $this->html = file_get_contents($dir.'/example/anime-6213.html');
     }
 
     public function testLoadXML()
