@@ -1,0 +1,16 @@
+server {
+    root /vagrant/public;
+    index index.html index.htm index.php;
+
+    server_name maldesk.local;
+
+    include hhvm.conf;
+
+    location / {
+        try_files $uri $uri/ /index.php?q=$uri&$args;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
