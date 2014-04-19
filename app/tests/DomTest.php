@@ -15,24 +15,24 @@ class DomTest extends TestCase
 
     public function testLoadXML()
     {
-        $this->assertEquals('xml', Dom::loadXML($this->xml));
-        $this->assertEquals('xml', Dom::load($this->xml));
+        $this->assertTrue(Dom::loadXML($this->xml));
+        $this->assertTrue(Dom::load($this->xml));
     }
 
     public function testLoadHtml()
     {
-        $this->assertEquals('html', Dom::loadHTML($this->html));
-        $this->assertEquals('html', Dom::load($this->html));
+        $this->assertTrue(Dom::loadHTML($this->html));
+        $this->assertTrue(Dom::load($this->html));
     }
 
     public function testTagName()
     {
         // HTML
-        $this->assertEquals('html', Dom::load($this->html));
-        $this->assertContains('Kagaku no Railgun', Dom::get('h1')->text);
+        Dom::load($this->html);
+        $this->assertContains('Alternative Title', Dom::get('h2')->text);
 
         // XML
-        $this->assertEquals('xml', Dom::load($this->xml));
+        Dom::load($this->xml);
         $this->assertEquals('Cowboy Bebop', Dom::get('anime')->series_title->text);
 
         // If doesn't exist
@@ -41,26 +41,31 @@ class DomTest extends TestCase
 
     public function testTagNameWithNumber()
     {
-        $this->assertEquals('html', Dom::load($this->html));
+        Dom::load($this->html);
         $this->assertContains('Synopsis', Dom::get('h2[5]')->text);
     }
 
     public function testByID()
     {
-        $this->assertEquals('html', Dom::load($this->html));
-        $this->assertContains('Watching', Dom::get('#myinfo_status')->text);
+        Dom::load($this->html);
+        $this->assertContains('Login', Dom::get('#malLogin')->text);
     }
 
     public function testByXpath()
     {
-        $this->assertEquals('html', Dom::load($this->html));
-        $this->assertContains('Ranked', Dom::query('//*[@class="spaceit"]')->text);
+        Dom::load($this->html);
+        $this->assertContains('Episodes', Dom::query('//*[@class="spaceit"]')->text);
     }
 
     public function testByClass()
     {
-        $this->assertEquals('html', Dom::load($this->html));
-        $this->assertContains('Watching', Dom::get('.spaceit')->text);
-        $this->assertContains('Watching', Dom::get('.spaceit[5]')->text);
+        Dom::load($this->html);
+        $this->assertContains('Episodes', Dom::get('.spaceit')->text);
+        $this->assertContains('Members', Dom::get('.spaceit[5]')->text);
+    }
+
+    public function tearDown()
+    {
+        \Mockery::close();
     }
 }

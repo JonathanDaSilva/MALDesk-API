@@ -30,16 +30,19 @@ class Dom {
     public function loadXML($content)
     {
         $content = trim($content);
-        $this->dom->loadXML($content);
-        return 'xml';
+        try {
+            $this->dom->loadXML($content);
+        } catch (\Exception $e) {
+            return false;
+        }
+        return true;
     }
 
     public function loadHTML($content)
     {
         // Clean
         $content = trim($content);
-        $tidy = new \tidy;
-        $content = $tidy->repairString($content);
+        $content = \Purifier::clean($content);
 
         // Delete duplicate ids
         $ids = [];
@@ -57,27 +60,52 @@ class Dom {
             $content
         );
 
-        $this->dom->loadHTML($content);
-        return 'html';
+        try {
+            $this->dom->loadHTML($content);
+        } catch (\Exception $e) {
+            return false;
+        }
+        return true;
     }
 
     public function get($param)
     {
-        if (substr($param, 0, 1) == '#') {
-            // If element start by a #
-            $this->node = $this->getByID($param);
-        } else if (substr($param, 0, 1) == '.') {
-            // If element start by a .
-            $this->node = $this->getByClass($param);
+        $name = substr($param, 1);
+        if ($param[0] == '#') {
+            $this->getByID($name);
+        } else if ($param[0] == '.') {
+            $this->getByClass($name);
         } else {
-            $this->node = $this->getByName($param);
+            $this->getByName($param);
         }
+        return $this;
+    }
 
-        if ($this->node != null) {
-            $this->dom->importNode($this->node);
-        } else {
-            $this->node = null;
-        }
+    public function getByID($param)
+    {
+        $this->node = $this->dom->getElementByID($param);
+        $this->importNode();
+        return $this;
+    }
+
+    public function query($param)
+    {
+        $xpath      = new \DomXpath($this->dom);
+        $nodelist   = $xpath->query($param);
+        $this->node = $this->getNode($nodelist, 0);
+        $this->importNode();
+        return $this;
+    }
+
+    public function getByClass($param)
+    {
+        $result = $this->getNumber($param);
+        $param  = $result[0];
+        $nb     = $result[1]+1;
+        var_dump($param);
+        var_dump($nb);
+
+        $this->query("//*[@class=\"$param\"][$nb]");
         return $this;
     }
 
@@ -85,26 +113,12 @@ class Dom {
     {
         $result = $this->getNumber($param);
         $param  = $result[0];
-        $nb     = $result[0];
-
-        $nodelist   = $this->dom->getElementsByTagName($param);
-        return $this->getNode($nodelist, $nb);
-    }
-
-    public function getByID($param)
-    {
-        $param = str_replace('#', '', $param);
-        return $this->dom->getElementByID($param);
-    }
-
-    public function getByClass($param)
-    {
-        $param  = str_replace('.', '', $param);
-        $result = $this->getNumber($param);
-        $param  = $result[0];
         $nb     = $result[1];
 
-        return $this->query("//*[@class=\"$param\"][$nb]");
+        $nodelist   = $this->dom->getElementsByTagName($param);
+        $this->node = $this->getNode($nodelist, $nb);
+        $this->importNode();
+        return $this;
     }
 
     public function getNumber($param)
@@ -124,7 +138,6 @@ class Dom {
 
     public function getNode($nodelist, $nb)
     {
-
         if ($nodelist->length >= $nb) {
             return $nodelist->item($nb);
         } else {
@@ -132,12 +145,12 @@ class Dom {
         }
     }
 
-    public function query($param)
+    public function importNode()
     {
-        $xpath    = new \DomXpath($this->dom);
-        $nodelist = $xpath->query($param);
-
-        return $this->getNode($nodelist, 0);
+        if($this->node != null) {
+            $this->dom->importNode($this->node);
+        }
+        return $this;
     }
 
     public function text()
@@ -151,7 +164,7 @@ class Dom {
 
     public function __get($name)
     {
-        if ($name == 'text') {
+        if ($name === 'text') {
             return $this->text();
         } else {
             return $this->get($name);

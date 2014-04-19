@@ -110,6 +110,7 @@ return array(
         'Illuminate\Workbench\WorkbenchServiceProvider',
 
         'anlutro\cURL\Laravel\cURLServiceProvider',
+        'Mews\Purifier\PurifierServiceProvider',
 
         'Services\Http\HttpServiceProvider',
         'Services\Basic\BasicServiceProvider',
@@ -181,6 +182,7 @@ return array(
         'View'            => 'Illuminate\Support\Facades\View',
 
         'cURL'            => 'anlutro\cURL\Laravel\cURL',
+        'Purifier'        => 'Mews\Purifier\Facades\Purifier',
     ),
 
 );
