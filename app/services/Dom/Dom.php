@@ -102,8 +102,6 @@ class Dom {
         $result = $this->getNumber($param);
         $param  = $result[0];
         $nb     = $result[1]+1;
-        var_dump($param);
-        var_dump($nb);
 
         $this->query("//*[@class=\"$param\"][$nb]");
         return $this;
