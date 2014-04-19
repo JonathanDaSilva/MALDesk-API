@@ -1,6 +1,3 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
 project_name = "maldesk"
 ip_address   = "172.22.22.22"
 

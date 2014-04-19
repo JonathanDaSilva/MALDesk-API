@@ -1,0 +1,23 @@
+{
+  "name": "MALDesk-API",
+  "version": "0.0.1",
+  "description": "An api for MyAnimeList",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "gulp-exec": "~1.0.4",
+    "gulp": "~3.6.1"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonathanDaSilva/MALDesk-API.git"
+  },
+  "author": "Jonathan Da Silva <dasilvabastos.jonthan@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/JonathanDaSilva/MALDesk-API/issues"
+  },
+  "homepage": "https://github.com/JonathanDaSilva/MALDesk-API"
+}
