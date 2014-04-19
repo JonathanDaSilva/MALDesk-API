@@ -112,9 +112,7 @@ return array(
         'anlutro\cURL\Laravel\cURLServiceProvider',
         'Mews\Purifier\PurifierServiceProvider',
 
-        'Services\Http\HttpServiceProvider',
-        'Services\Basic\BasicServiceProvider',
-        'Services\Dom\DomServiceProvider',
+        'Services\Provider',
     ),
 
     /*
