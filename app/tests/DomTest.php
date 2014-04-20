@@ -64,6 +64,20 @@ class DomTest extends TestCase
         $this->assertContains('Members', Dom::get('.spaceit[5]')->text);
     }
 
+    public function testLoop()
+    {
+        Dom::load($this->xml);
+        $i    = 0;
+        $text = '';
+        Dom::get('anime')->each(function($anime) use(&$i, &$text){
+            $this->assertNotEquals($text, $anime->text);
+            $text = $anime->text;
+            $i++;
+        });
+
+        $this->assertEquals(77, $i);
+    }
+
     public function tearDown()
     {
         \Mockery::close();

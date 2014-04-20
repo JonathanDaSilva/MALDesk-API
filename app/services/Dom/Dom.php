@@ -83,16 +83,17 @@ class Dom {
 
     public function getByID($param)
     {
-        $this->node = $this->dom->getElementByID($param);
+        $this->node     = $this->dom->getElementByID($param);
+        $this->nodelist = null;
         $this->importNode();
         return $this;
     }
 
     public function query($param)
     {
-        $xpath      = new \DomXpath($this->dom);
-        $nodelist   = $xpath->query($param);
-        $this->node = $this->getNode($nodelist, 0);
+        $xpath          = new \DomXpath($this->dom);
+        $this->nodelist = $xpath->query($param);
+        $this->node     = $this->getNode(0);
         $this->importNode();
         return $this;
     }
@@ -113,8 +114,8 @@ class Dom {
         $param  = $result[0];
         $nb     = $result[1];
 
-        $nodelist   = $this->dom->getElementsByTagName($param);
-        $this->node = $this->getNode($nodelist, $nb);
+        $this->nodelist = $this->dom->getElementsByTagName($param);
+        $this->node     = $this->getNode($nb);
         $this->importNode();
         return $this;
     }
@@ -134,21 +135,29 @@ class Dom {
         return [$param, $nb];
     }
 
-    public function getNode($nodelist, $nb)
+    public function getNode($nb)
     {
-        if ($nodelist->length >= $nb) {
-            return $nodelist->item($nb);
+        if ($this->nodelist == null) {
+            return null;
+        } else if ($this->nodelist->length >= $nb) {
+            return $this->nodelist->item($nb);
         } else {
             return null;
         }
     }
 
-    public function importNode()
+    public function importNode($node = null)
     {
+        if ($node != null) {
+            $this->dom->importNode($node);
+            $this->node = $node;
+            return $this;
+        }
+
         if($this->node != null) {
             $this->dom->importNode($this->node);
+            return $this;
         }
-        return $this;
     }
 
     public function text()
@@ -157,6 +166,20 @@ class Dom {
             return $this->node->textContent;
         } else {
             return false;
+        }
+    }
+
+    public function each($callback)
+    {
+        if( $this->nodelist == null) {
+            return null;
+        }
+
+        for($i = 0; $i < $this->nodelist->length; $i++) {
+            $node = $this->nodelist->item($i);
+            $dom  = clone $this;
+            $dom->importNode($node);
+            $callback($dom);
         }
     }
 
