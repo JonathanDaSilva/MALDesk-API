@@ -10,8 +10,20 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+Route::pattern('pseudo', '\w+');
 
-Route::get('/', function()
-{
-	return View::make('hello');
+Route::group([
+    'prefix' => 'api',
+    'before' => 'basic',
+], function(){
+    Route::get('/animelist',[
+        'uses'   => 'AnimeController@index',
+        'as'     => 'Anime.index',
+    ]);
+
+    Route::get('/animelist/{pseudo}',[
+        'uses' => 'AnimeController@getList',
+        'as'   => 'anime.list',
+    ]);
+
 });
