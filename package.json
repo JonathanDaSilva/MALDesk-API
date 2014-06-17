@@ -2,11 +2,10 @@
   "name": "MALDesk-API",
   "version": "0.0.1",
   "description": "An api for MyAnimeList",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "gulp-exec": "~1.0.4",
-    "gulp": "~3.6.1"
+    "gulp": "~3.8.0",
+    "gulp-exec": "^2.0.1"
   },
   "scripts": {
     "test": "gulp test"
