@@ -3,16 +3,25 @@ namespace Services\Dom;
 
 class Dom {
 
-    private $dom;
-    private $node = null;
+    private $dom      = null;
+    private $node     = null;
+    private $nodelist = null;
+    private $type     = null;
 
-    public function __construct($dom = null)
+    public function __construct($nodelist = null, $node = null)
     {
-        if ($dom != null) {
-            $this->dom = $dom;
-        } else {
-            $this->dom = new \DomDocument;
+        $this->dom = new \DomDocument;
+        if ($node != null) {
+            $node = $this->dom->importNode($node, true);
+            $this->dom->appendChild($node);
+            $this->nodelist = $nodelist;
+            $this->node     = $node;
         }
+    }
+
+    public function type()
+    {
+        return $this->type;
     }
 
     public function load($content)
@@ -32,6 +41,7 @@ class Dom {
         $content = trim($content);
         try {
             $this->dom->loadXML($content);
+            $this->type = 'xml';
         } catch (\Exception $e) {
             return false;
         }
@@ -62,6 +72,7 @@ class Dom {
 
         try {
             $this->dom->loadHTML($content);
+            $this->type = 'html';
         } catch (\Exception $e) {
             return false;
         }
@@ -72,52 +83,59 @@ class Dom {
     {
         $name = substr($param, 1);
         if ($param[0] == '#') {
-            $this->getByID($name);
+            $this->getById($name);
         } else if ($param[0] == '.') {
             $this->getByClass($name);
         } else {
             $this->getByName($param);
         }
-        return $this;
+        return $this->getDom();
     }
 
-    public function getByID($param)
+    public function getById($param)
     {
         $this->node     = $this->dom->getElementByID($param);
         $this->nodelist = null;
-        $this->importNode();
-        return $this;
-    }
-
-    public function query($param)
-    {
-        $xpath          = new \DomXpath($this->dom);
-        $this->nodelist = $xpath->query($param);
-        $this->node     = $this->getNode(0);
-        $this->importNode();
-        return $this;
-    }
-
-    public function getByClass($param)
-    {
-        $result = $this->getNumber($param);
-        $param  = $result[0];
-        $nb     = $result[1]+1;
-
-        $this->query("//*[@class=\"$param\"][$nb]");
-        return $this;
+        return $this->getDom();
     }
 
     public function getByName($param)
     {
         $result = $this->getNumber($param);
         $param  = $result[0];
-        $nb     = $result[1];
+        $nb     = $result[1]-1;
+
+        if ($nb < 0) {
+            $nb = 0;
+        }
 
         $this->nodelist = $this->dom->getElementsByTagName($param);
         $this->node     = $this->getNode($nb);
-        $this->importNode();
-        return $this;
+        return $this->getDom();
+    }
+
+    public function getByClass($param)
+    {
+        $result = $this->getNumber($param);
+        $param  = $result[0];
+        $nb     = $result[1];
+
+        $query = "//*[@class=\"$param\"]";
+        if($nb != 0) {
+            $query = $query."[$nb]";
+        }
+
+
+        $this->query($query);
+        return $this->getDom();
+    }
+
+    public function query($param)
+    {
+        $xpath          = new \DomXpath($this->dom);
+        $this->nodelist = $xpath->evaluate($param);
+        $this->node     = $this->getNode(0);
+        return $this->getDom();
     }
 
     public function getNumber($param)
@@ -146,18 +164,12 @@ class Dom {
         }
     }
 
-    public function importNode($node = null)
+    public function getDom($node = null)
     {
-        if ($node != null) {
-            $this->dom->importNode($node);
-            $this->node = $node;
-            return $this;
+        if ($node == null) {
+            $node = $this->node;
         }
-
-        if($this->node != null) {
-            $this->dom->importNode($this->node);
-            return $this;
-        }
+        return new self($this->nodelist, $node);
     }
 
     public function text()
@@ -177,8 +189,7 @@ class Dom {
 
         for($i = 0; $i < $this->nodelist->length; $i++) {
             $node = $this->nodelist->item($i);
-            $dom  = clone $this;
-            $dom->importNode($node);
+            $dom  = $this->getDom($node);
             $callback($dom);
         }
     }
