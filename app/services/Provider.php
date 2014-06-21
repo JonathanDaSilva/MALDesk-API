@@ -37,6 +37,13 @@ class Provider extends ServiceProvider {
             return new \Services\Http\Http;
         });
         $loader->alias('Http', 'Services\Http\HttpFacade');
+
+        // Convert
+        $this->app->bindShared('convert', function()
+        {
+            return new \Services\Convert\Convert;
+        });
+        $loader->alias('Convert', 'Services\Convert\ConvertFacade');
     }
 
 }
