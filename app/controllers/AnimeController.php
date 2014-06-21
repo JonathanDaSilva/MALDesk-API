@@ -12,4 +12,9 @@ class AnimeController extends BaseController
     {
         return Anime::getList($pseudo);
     }
+
+    public function get($id)
+    {
+        return Anime::get($id);
+    }
 }

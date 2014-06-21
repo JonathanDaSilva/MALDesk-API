@@ -33,4 +33,40 @@ class Anime
 
         return $results;
     }
+
+    public function get($id)
+    {
+        $response = Http::get("http://myanimelist.net/anime/$id");
+        Dom::load($response);
+
+        $result = [
+            'serie' => [
+                'id'        => (int)    $id,
+                'title'     => (string) Dom::get('h1')->text,
+                'title_eng' => (string) Dom::query('//*[@class="dark_text" and text()="English:"]/..')->content,
+                'title_jap' => (string) Dom::query('//*[@class="dark_text" and text()="Japanese:"]/..')->content,
+                'synonyms'  => (string) Dom::query('//*[@class="dark_text" and text()="Synonyms:"]/..')->content,
+                'ranked'    => (int)    str_replace('#', '', Dom::query('//*[@class="dark_text" and text()="Ranked:"]/..')->content),
+                'type'      => (string) Dom::query('//*[@class="dark_text" and text()="Type:"]/..')->content,
+                'episodes'  => (int)    Dom::query('//*[@class="dark_text" and text()="Episodes:"]/..')->content,
+                'status'    => (int)    $this->StatusNumber(Dom::query('//*[@class="dark_text" and text()="Status:"]/..')->content),
+                'genres'    => (array)  explode(', ', trim(str_replace('Genres:', '', Dom::query('//*[@class="dark_text" and text()="Genres:"]/..')->text))),
+                'score'     => (float)  Dom::query('//*[@class="dark_text" and text()="Score:"]/..')->content,
+                'synopsis'  => (string) preg_replace('/\s+/', ' ', Dom::query('//table//table//*[@valign="top"]')->content),
+            ]
+        ];
+        return $result;
+    }
+
+    public function statusNumber($text)
+    {
+        switch($text) {
+            case 'Currently Airing':
+                return 1;
+                break;
+            case 'Finished Airing':
+                return 2;
+                break;
+        }
+    }
 }

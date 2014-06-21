@@ -53,6 +53,30 @@ class AnimeTest extends TestCase
         $this->assertEquals(3, $response[1]['user']['status']);
     }
 
+    public function testGetAnime()
+    {
+        Http::shouldReceive('get')
+            ->atLeast()
+            ->once()
+            ->andReturn($this->html);
+
+        $response = Anime::get(6213)['serie'];
+
+        $this->assertEquals('Toaru Kagaku no Railgun',      $response['title']);
+        $this->assertEquals('A Certain Scientific Railgun', $response['title_eng']);
+        $this->assertEquals('Toaru Kagaku no Choudenjihou', $response['synonyms']);
+        $this->assertEquals(525,                            $response['ranked']);
+        $this->assertEquals("TV",                           $response['type']);
+        $this->assertEquals(24,                             $response['episodes']);
+        $this->assertEquals(2,                              $response['status']);
+        $this->assertContains("Action",                     $response['genres']);
+        $this->assertEquals(7.96,                           $response['score']);
+        $this->assertEquals(
+            "Academy City is a highly developed place in terms of technology. It is said to be 20 to 30 years ahead of the rest of the world, and 80% of its 2.3 million residents are students. The focus of studies here is directed towards esper powers. Misaka Mikoto, one of the top level espers in town, shares a room with Kuroko Shirai, another high level esper who is a member of Judgement, a law enforcing agency composed of students. Both attend Tokiwadai, a private school reserved for the high-leveled and the rich. Kuroko's partner at Judgement, Kazari Uiharu, is a low level esper who studies at Sakugawa middle school. Her best friend and classmate there is Ruiko Saten, a level zero, one who has no esper powers. Together, the four encounter several adventures in the exciting scientific town. (Source: ANN)",
+            $response['synopsis']
+        );
+    }
+
     public function tearDown()
     {
         \Mockery::close();

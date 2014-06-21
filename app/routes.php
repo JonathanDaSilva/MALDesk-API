@@ -11,6 +11,7 @@
 |
 */
 Route::pattern('pseudo', '\w+');
+Route::pattern('id', '\d+');
 
 Route::group([
     'prefix' => 'api',
@@ -24,6 +25,11 @@ Route::group([
     Route::get('/animelist/{pseudo}',[
         'uses' => 'AnimeController@getList',
         'as'   => 'anime.list',
+    ]);
+
+    Route::get('/anime/{id}',[
+        'uses'   => 'AnimeController@get',
+        'as'     => 'Anime.get',
     ]);
 
 });
