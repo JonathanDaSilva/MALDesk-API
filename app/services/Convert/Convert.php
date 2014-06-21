@@ -6,15 +6,16 @@ class Convert
 {
     public function toInt($text)
     {
-        $text = explode('.', $text)[0];
-        $text = preg_replace('/[a-zA-Z\\\#\<\>\/\{\}\,]/', '', $text);
-        return (int) $text;
+        return (int) $this->toFloat($text);
     }
 
-    public function toArray($text)
+    public function toArray($text, $explode=null)
     {
+        if ($explode == null) {
+            $explode = ',';
+        }
         $text  = $this->toString($text);
-        $array = explode(',', $text);
+        $array = explode($explode, $text);
         $array = array_filter($array, function(&$element){
             $element = trim($element);
             return $element;
@@ -32,7 +33,7 @@ class Convert
 
     public function toFloat($text)
     {
-        $text = $this->toInt($text);
+        $text = preg_replace('/[a-zA-Z\\\#\<\>\/\{\}\,]/', '', $text);
         return (float) $text;
     }
 }

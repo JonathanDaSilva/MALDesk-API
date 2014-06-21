@@ -2,6 +2,12 @@
 
 class ConvertTest extends TestCase
 {
+    public function testConvertToFloat()
+    {
+        $this->assertSame(12000000.45, Convert::toFloat("12,000,000.45"));
+        $this->assertSame(545.0, Convert::toFloat("# 545"));
+    }
+
     public function testConvertToInt()
     {
         $this->assertSame(12000000, Convert::toInt("12,000,000.45"));
@@ -12,6 +18,7 @@ class ConvertTest extends TestCase
     {
         $this->assertSame(['test', 'ok'], Convert::toArray("   test,      ok    "));
         $this->assertSame(['foo', 'bar'], Convert::toArray("   foo,,, foo, bar,       "));
+        $this->assertSame(['foo', 'bar'], Convert::toArray("foo;bar", ';'));
     }
 
     public function testConvertToString()
