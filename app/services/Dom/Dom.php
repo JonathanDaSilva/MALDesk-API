@@ -6,7 +6,6 @@ class Dom {
     private $dom      = null;
     private $node     = null;
     private $nodelist = null;
-    private $type     = null;
 
     public function __construct($nodelist = null, $node = null)
     {
@@ -17,11 +16,6 @@ class Dom {
             $this->nodelist = $nodelist;
             $this->node     = $node;
         }
-    }
-
-    public function type()
-    {
-        return $this->type;
     }
 
     public function load($content)
@@ -41,7 +35,6 @@ class Dom {
         $content = trim($content);
         try {
             $this->dom->loadXML($content);
-            $this->type = 'xml';
         } catch (\Exception $e) {
             return false;
         }
@@ -52,6 +45,7 @@ class Dom {
     {
         // Clean
         $content = trim($content);
+        $content = preg_replace('/\<h1\>\<div.*\>.*\<\/div\>(.*)\<\/h1\>/', '<h1>$1</h1>', $content);
         $content = \Purifier::clean($content);
 
         // Delete duplicate ids
@@ -72,7 +66,6 @@ class Dom {
 
         try {
             $this->dom->loadHTML($content);
-            $this->type = 'html';
         } catch (\Exception $e) {
             return false;
         }
@@ -181,6 +174,21 @@ class Dom {
         }
     }
 
+    public function content()
+    {
+        $result = "";
+        if ($this->node != null) {
+            $lists  = $this->node->childNodes;
+            for ($i=0; $i < $lists->length; $i++){
+                $node = $lists->item($i);
+                if ($node->nodeName == '#text') {
+                    $result = $result.$node->textContent;
+                }
+            }
+        }
+        return trim($result);
+    }
+
     public function each($callback)
     {
         if( $this->nodelist == null) {
@@ -196,10 +204,15 @@ class Dom {
 
     public function __get($name)
     {
-        if ($name === 'text') {
-            return $this->text();
-        } else {
-            return $this->get($name);
+        switch($name) {
+            case 'text':
+                return $this->text();
+                break;
+            case 'content':
+                return $this->content();
+                break;
+            default:
+                return $this->get($name);
         }
     }
 }

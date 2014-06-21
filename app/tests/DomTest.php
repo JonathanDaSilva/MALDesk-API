@@ -13,17 +13,20 @@ class DomTest extends TestCase
         $this->html = file_get_contents($dir.'/example/anime-6213.html');
     }
 
+    public function testLoad()
+    {
+        $this->assertTrue(Dom::load($this->xml));
+        $this->assertTrue(Dom::load($this->html));
+    }
+
     public function testLoadXML()
     {
         $this->assertTrue(Dom::loadXML($this->xml));
-        $this->assertTrue(Dom::load($this->xml));
-        $this->assertEquals('xml', Dom::type());
     }
 
     public function testLoadHtml()
     {
         $this->assertTrue(Dom::loadHTML($this->html));
-        $this->assertTrue(Dom::load($this->html));
     }
 
     public function testTagName()
@@ -68,6 +71,12 @@ class DomTest extends TestCase
         $this->assertContains('Episodes', Dom::get('.spaceit')->text);
         $this->assertContains('Episodes', Dom::get('.spaceit[1]')->text);
         $this->assertContains('Members',  Dom::get('.spaceit[6]')->text);
+    }
+
+    public function testContent()
+    {
+        Dom::load($this->html);
+        $this->assertEquals('24', Dom::get('.spaceit')->content);
     }
 
     public function testLoop()
