@@ -4,6 +4,7 @@
   "description": "An api for MyAnimeList",
   "dependencies": {},
   "devDependencies": {
+    "coffee-script": "^1.7.1",
     "gulp": "~3.8.0",
     "gulp-exec": "^2.0.1"
   },
