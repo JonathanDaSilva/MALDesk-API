@@ -1,12 +1,19 @@
-gulp = require('gulp')
-exec = require('gulp-exec')
+gulp    = require('gulp')
+phpunit = require('gulp-phpunit')
+notify  = require('gulp-notify')
 
 gulp.task('test', ->
-  gulp.src('.')
-    .pipe(exec('phpunit', {
-      continueOnError: true
+  gulp.src('./app/tests/*.php')
+    .pipe(phpunit(null, {
+      debug: false
+      notify: true
+      configurationFile: 'phpunit.xml'
     }))
-    .pipe(exec.reporter())
+    .on('error', notify.onError('Test Fail'))
+    .pipe(notify({
+      message: 'Test OK'
+      onLast: true
+    }))
 )
 
 gulp.task('default', ->
